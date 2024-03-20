@@ -1,29 +1,26 @@
 # Zad#1
 import csv
 
-def read_cook_book(file_name):
-  """
-  Читает файл с рецептами и возвращает словарь, где ключами являются названия блюд,
-  а значениями - списки словарей с ингредиентами.
-  """
-  cook_book = {}
-  with open(file_name, 'r') as f:
-    reader = csv.reader(f, delimiter=',')
-    for row in reader:
-      dish_name = row[0]
-      num_ingredients = int(row[1])
-      ingredients = []
-      for i in range(2, num_ingredients * 3 + 2, 3):
-        ingredient_name = row[i]
-        quantity = int(row[i + 1])
-        measure = row[i + 2]
-        ingredients.append({
-          'ingredient_name': ingredient_name,
-          'quantity': quantity,
-          'measure': measure
-        })
-      cook_book[dish_name] = ingredients
-  return cook_book
+def create_dict_from_file(file_dir, file_name):
+    """Функция чтения файла + создание словаря нужного формата"""
+    file_path = os.path.abspath(os.path.join(file_dir, file_name))
+    cook_dict = {}
+    with open(file_path, encoding='utf8') as file_work:
+        for line in file_work:
+            dish_name = line.lower().strip()
+            counter = int(file_work.readline())
+            list_of_ingridient = []
+            for i in range(counter):
+                temp_dict = {}
+                ingridient = file_work.readline().lower()
+                ingridient = ingridient.strip().split('|')
+                temp_dict['ingridient_name'] = ingridient[0].strip()
+                temp_dict['quantity'] = int(ingridient[1])
+                temp_dict['measure'] = ingridient[2].strip()
+                list_of_ingridient.append(temp_dict)
+            cook_dict[dish_name] = list_of_ingridient
+            file_work.readline()
+    return cook_dict
 
 cook_book = read_cook_book('recipes.csv')
 print(cook_book)
